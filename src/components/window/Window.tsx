@@ -30,6 +30,9 @@ export function Window({ window: win, children }: WindowProps) {
   const handleTitleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       if (win.isMaximized) return
+      // Don't start drag if clicking window control buttons
+      const target = e.target as HTMLElement
+      if (target.closest('[data-window-control]')) return
       e.preventDefault()
       setIsDragging(true)
       dragOffset.current = {
@@ -137,7 +140,6 @@ export function Window({ window: win, children }: WindowProps) {
         ...style,
         zIndex: win.zIndex,
         willChange: isDragging || isResizing ? 'transform' : 'auto',
-        contain: 'layout',
       }}
       onMouseDown={handleMouseDown}
     >
@@ -155,12 +157,13 @@ export function Window({ window: win, children }: WindowProps) {
         </div>
 
         {/* Window controls */}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-0.5" data-window-control>
           <button
             onClick={(e) => {
               e.stopPropagation()
               minimizeWindow(win.id)
             }}
+            data-window-control
             className="w-7 h-7 flex items-center justify-center rounded hover:bg-white/10 text-os-text-secondary"
           >
             <Minus size={14} />
@@ -170,6 +173,7 @@ export function Window({ window: win, children }: WindowProps) {
               e.stopPropagation()
               maximizeWindow(win.id)
             }}
+            data-window-control
             className="w-7 h-7 flex items-center justify-center rounded hover:bg-white/10 text-os-text-secondary"
           >
             {win.isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
@@ -179,6 +183,7 @@ export function Window({ window: win, children }: WindowProps) {
               e.stopPropagation()
               closeWindow(win.id)
             }}
+            data-window-control
             className="w-7 h-7 flex items-center justify-center rounded hover:bg-red-500/80 hover:text-white text-os-text-secondary"
           >
             <X size={14} />

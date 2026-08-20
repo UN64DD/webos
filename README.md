@@ -1,75 +1,143 @@
-# React + TypeScript + Vite
+# WebOS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A browser-based operating system simulation built with React, TypeScript, and modern web technologies.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Desktop Environment** — Full-screen wallpaper, draggable desktop icons, right-click context menu
+- **Window Manager** — Drag, resize, minimize, maximize, close, and focus windows with proper z-index management
+- **Taskbar** — Running application indicators, system tray with clock, battery, and network status
+- **Start Menu** — Application launcher with search filtering, settings access
+- **File Manager** — Browse, create, rename, delete files and folders with grid/list view toggle
+- **Text Editor** — Edit and save text files with dirty state indicator and keyboard shortcuts (Ctrl+S)
+- **Terminal** — Simulated shell with filesystem commands (ls, cd, mkdir, touch, cat, echo, rm, tree, etc.)
+- **Browser** — iframe-based web browser with address bar, navigation, and fallback for restricted sites
+- **Settings** — Theme switching (dark/light), wallpaper selection, storage info, system reset
+- **Notification System** — Toast notifications with success, info, warning, and error types
+- **Virtual Filesystem** — IndexedDB-backed persistent filesystem shared across all applications
+- **OS API Layer** — Centralized service layer for filesystem, windows, notifications, and settings
 
-## React Compiler
+## Screenshots
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<!-- Add screenshots here -->
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Start development server
+npm run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Build for production
+npm run build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Run tests
+npm run test
 
+# Lint
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Technology Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 19 |
+| Language | TypeScript |
+| Build | Vite |
+| Styling | Tailwind CSS v4 |
+| State | Zustand |
+| Persistence | Dexie.js (IndexedDB) |
+| Icons | Lucide React |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Architecture
 
 ```
+src/
+├── apps/                    # Application components
+│   ├── browser/
+│   ├── file-manager/
+│   ├── settings/
+│   ├── terminal/
+│   └── text-editor/
+├── components/              # Shared UI components
+│   ├── desktop/
+│   ├── taskbar/
+│   ├── window/
+│   ├── start-menu/
+│   ├── notifications/
+│   └── ui/
+├── core/                    # Core OS services (no React dependency)
+│   ├── applications/        # Application registry
+│   ├── filesystem/          # Virtual filesystem service
+│   ├── os/                  # OS API layer
+│   ├── terminal/            # Shell parser and command registry
+│   └── window-manager/      # Window management service
+├── stores/                  # Zustand state stores
+├── database/                # Dexie/IndexedDB configuration
+├── types/                   # TypeScript type definitions
+└── __tests__/               # Unit tests
+```
+
+### Design Principles
+
+- **Layered Architecture** — UI → Application Layer → OS API → Core Services → Persistence
+- **Separation of Concerns** — Filesystem logic is independent of React. Terminal commands are independent of Terminal UI.
+- **Modular Applications** — New apps can be added by registering in the application registry without rewriting core systems.
+- **Centralized State** — Separate Zustand stores for windows, desktop, settings, notifications, and filesystem.
+
+## Project Structure
+
+```
+WebOS
+├── Desktop
+│   ├── Wallpaper
+│   ├── Desktop Icons (draggable, persisted)
+│   └── Windows
+├── Window Manager
+│   ├── Drag / Resize
+│   ├── Minimize / Maximize / Close
+│   ├── Focus Management
+│   └── Z-Index Stacking
+├── Taskbar
+│   ├── Start Button
+│   ├── Running App Indicators
+│   ├── System Tray (network, battery, clock)
+│   └── Notification Area
+├── Start Menu
+│   ├── Application List
+│   ├── Search
+│   ├── Settings
+│   └── Power
+├── Applications
+│   ├── File Manager
+│   ├── Terminal
+│   ├── Text Editor
+│   ├── Browser
+│   └── Settings
+├── Notification System
+└── Virtual Filesystem (IndexedDB)
+```
+
+## Persistence
+
+After page refresh, WebOS preserves:
+- Virtual filesystem (files and folders)
+- Settings (theme, wallpaper)
+- Desktop icon positions
+
+## Future Roadmap
+
+- **v1** — Desktop environment
+- **v2** — Virtual filesystem
+- **v3** — Process manager
+- **v4** — PWA/offline support
+- **v5** — WebAssembly applications
+- **v6** — Plugin system
+- **v7** — AI OS assistant
+
+## License
+
+MIT
